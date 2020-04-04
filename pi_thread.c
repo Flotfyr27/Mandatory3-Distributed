@@ -70,7 +70,7 @@ void* calc(void* rank){
 	min = (intervals/thread_count)*my_rank;
 	max = (intervals/thread_count)*(my_rank+1);
 	double x, f, localSum = 0;
-	printf("Hello from thread %d of %d! Min: %d, Max: %d\n", my_rank, thread_count, min, max);
+	printf("Hello from thread %l of %d! Min: %d, Max: %d\n", my_rank, thread_count, min, max);
 
 
      for (i = max; i > min; i--) {
@@ -80,10 +80,10 @@ void* calc(void* rank){
      }
 	 //Critial section
 	 pthread_mutex_lock(&lock);
-	 printf("Thread %d entered the lock!", my_rank);
+	 printf("Thread %l entered the lock!", my_rank);
 	 sum += localSum;
 	 pthread_mutex_unlock(&lock);
-	 printf("Thread %d has left the lock", my_rank);
+	 printf("Thread %l has left the lock", my_rank);
 	
 	
 	return NULL;
