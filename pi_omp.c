@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include <pthread.h>
+#include <omp.h>
 
 #define PI25DT 3.141592653589793238462643
 
@@ -21,8 +21,7 @@ int thread_count;
 long int intervals = INTERVALS;
 double dx;
 double sum;
-pthread_mutex_t lock;
-void* calc(void* rank);
+double Local_calc(long int interval);
 
 
 int main(int argc, char **argv)
@@ -36,26 +35,11 @@ struct timeval {
   gettimeofday(&start, NULL); 
   sum = 0.0;
   dx = 1.0 / (double) intervals;
-  
-  long thread;
-  pthread_t* thread_handles;
-  pthread_mutex_init(&lock, NULL);
-  
   //Get thread count from cmd line
   thread_count = strtol(argv[1], NULL, 10);
-  //printf("TOTAL INTERVALS: %ld\n", intervals); 
-  thread_handles = malloc(thread_count*sizeof(pthread_t));//Allocate space for threads
-  //Create the threads
-  for(thread = 0; thread < thread_count; thread++){
-	  pthread_create(&thread_handles[thread], NULL, calc, (void*) thread);
-  }
-  //printf("Hello from main thread\n");
-  
-  for(thread = 0; thread < thread_count; thread++){
-	  pthread_join(thread_handles[thread], NULL);
-  }
-  free(thread_handles);
-  pthread_mutex_destroy(&lock);
+# pragma omp parallel num_threads(thread_count) \
+	reduction(+: sum)
+  sum += Local_calc(intervals);
   pi = dx*sum;
 
   gettimeofday(&end, NULL); 
@@ -69,8 +53,9 @@ struct timeval {
   
   return 0;
 }
-void* calc(void* rank){
-	long my_rank = (long) rank;
+double Local_calc(long int local_interval){
+	long my_rank = omp_get_thread_num();
+	int thread_count = omp_get_num_threads();
 	long int i;
 	int min, max;
 	//Casting the values as doubles to keep decimal points during calculation
@@ -85,13 +70,5 @@ void* calc(void* rank){
        f = 4.0 / (1.0 + x*x);
        localSum = localSum + f;
      }
-	 //Critial section
-	 pthread_mutex_lock(&lock);
-	 //printf("Thread %ld entered the lock!\n", my_rank);
-	 sum += localSum;
-	 pthread_mutex_unlock(&lock);
-	 //printf("Thread %ld has left the lock\n", my_rank);
-	
-	
-	return NULL;
+	 return localSum;
 }	
