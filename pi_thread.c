@@ -11,7 +11,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 #include <pthread.h>
 
 #define PI25DT 3.141592653589793238462643
@@ -23,13 +23,17 @@ double dx;
 double sum;
 pthread_mutex_t lock;
 void* calc(void* rank);
+struct timeval { 
+               time_t      tv_sec;     // seconds  
+               suseconds_t tv_usec;    // microseconds 
+           };
+struct timeval start, end;
 
 int main(int argc, char **argv)
 {
   
-  double pi;
-  double time2;
-  time_t time1 = clock();
+  double pi, time_taken;
+  gettimeofday(&start, NULL); 
   sum = 0.0;
   dx = 1.0 / (double) intervals;
   
@@ -54,12 +58,12 @@ int main(int argc, char **argv)
   pthread_mutex_destroy(&lock);
   pi = dx*sum;
 
-  
+  gettimeofday(&end, NULL); 
 
-  time2 = (clock() - time1) / (double) CLOCKS_PER_SEC;
+  time_taken = (end.tv_sec - start.tv_sec) * 1e6;
 
-  printf("Computed PI, The true PI, Error, Cores, Elapsed time(s)\n");
-  printf("%.24f, %.24f, %.24f, %d, %f\n",pi, PI25DT, PI25DT-pi, thread_count, time2);
+  //printf("Computed PI, The true PI, Error, Cores, Elapsed time(s)\n");
+  printf("%.24f, %.24f, %.24f, %d, %f\n",pi, PI25DT, PI25DT-pi, thread_count, time_taken);
   
   
   return 0;
