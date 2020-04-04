@@ -70,7 +70,7 @@ void* calc(void* rank){
 	int min, max;
 	min = (intervals/thread_count)*my_rank;
 	max = (intervals/thread_count)*(my_rank+1);
-	if(thread_count % 2 != 0 && my_rank == 0){
+	if(thread_count % 2 != 0 && my_rank == 0 && intervals % thread_count != 0){
 		max = max + 1;
 	}
 	double x, f, localSum = 0;
