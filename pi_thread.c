@@ -68,11 +68,8 @@ void* calc(void* rank){
 	long my_rank = (long) rank;
 	long int i;
 	int min, max;
-	min = (intervals/thread_count)*my_rank;
-	max = (intervals/thread_count)*(my_rank+1);
-	if(thread_count % 2 != 0 && my_rank == 0 && intervals % thread_count != 0){
-		max = max + 1;
-	}
+	min = ((double)intervals/(double)thread_count)*(double)my_rank;
+	max = ((double)intervals/(double)thread_count)*((double)my_rank+1);
 	double x, f, localSum = 0;
 	printf("Hello from thread %ld of %d! Min: %d, Max: %d\n", my_rank, thread_count, min, max);
 
