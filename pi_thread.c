@@ -39,13 +39,13 @@ int main(int argc, char **argv)
   
   //Get thread count from cmd line
   thread_count = strtol(argv[1], NULL, 10);
-  printf("TOTAL INTERVALS: %ld\n", intervals); 
+  //printf("TOTAL INTERVALS: %ld\n", intervals); 
   thread_handles = malloc(thread_count*sizeof(pthread_t));//Allocate space for threads
   //Create the threads
   for(thread = 0; thread < thread_count; thread++){
 	  pthread_create(&thread_handles[thread], NULL, calc, (void*) thread);
   }
-  printf("Hello from main thread\n");
+  //printf("Hello from main thread\n");
   
   for(thread = 0; thread < thread_count; thread++){
 	  pthread_join(thread_handles[thread], NULL);
@@ -71,7 +71,7 @@ void* calc(void* rank){
 	min = ((double)intervals/(double)thread_count)*(double)my_rank;
 	max = ((double)intervals/(double)thread_count)*((double)my_rank+1);
 	double x, f, localSum = 0;
-	printf("Hello from thread %ld of %d! Min: %d, Max: %d\n", my_rank, thread_count, min, max);
+	//printf("Hello from thread %ld of %d! Min: %d, Max: %d\n", my_rank, thread_count, min, max);
 
 
      for (i = max; i > min; i--) {
@@ -81,10 +81,10 @@ void* calc(void* rank){
      }
 	 //Critial section
 	 pthread_mutex_lock(&lock);
-	 printf("Thread %ld entered the lock!\n", my_rank);
+	 //printf("Thread %ld entered the lock!\n", my_rank);
 	 sum += localSum;
 	 pthread_mutex_unlock(&lock);
-	 printf("Thread %ld has left the lock\n", my_rank);
+	 //printf("Thread %ld has left the lock\n", my_rank);
 	
 	
 	return NULL;
