@@ -42,6 +42,7 @@ int main(int argc, char **argv)
   if(thread_count % 2 != 0){
 	  intervals += 1;
   }
+  printf("TOTAL INTERVALS: %ld\n", intervals); 
   thread_handles = malloc(thread_count*sizeof(pthread_t));//Allocate space for threads
   //Create the threads
   for(thread = 0; thread < thread_count; thread++){
@@ -73,9 +74,6 @@ void* calc(void* rank){
 	min = (intervals/thread_count)*my_rank;
 	max = (intervals/thread_count)*(my_rank+1);
 	double x, f, localSum = 0;
-	if(my_rank == 0 && thread_count % 2 != 0){
-		max = max + 1;
-	}
 	printf("Hello from thread %ld of %d! Min: %d, Max: %d\n", my_rank, thread_count, min, max);
 
 
