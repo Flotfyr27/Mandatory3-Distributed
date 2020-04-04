@@ -44,7 +44,7 @@ int main(int argc, char **argv)
   for(thread = 0; thread < thread_count; thread++){
 	  pthread_create(&thread_handles[thread], NULL, calc, (void*) thread);
   }
-  printf("Hello from main thread");
+  printf("Hello from main thread\n");
   
   for(thread = 0; thread < thread_count; thread++){
 	  pthread_join(thread_handles[thread], NULL);
@@ -80,10 +80,10 @@ void* calc(void* rank){
      }
 	 //Critial section
 	 pthread_mutex_lock(&lock);
-	 printf("Thread %ld entered the lock!", my_rank);
+	 printf("Thread %ld entered the lock!\n", my_rank);
 	 sum += localSum;
 	 pthread_mutex_unlock(&lock);
-	 printf("Thread %ld has left the lock", my_rank);
+	 printf("Thread %ld has left the lock\n", my_rank);
 	
 	
 	return NULL;
