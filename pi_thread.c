@@ -39,6 +39,9 @@ int main(int argc, char **argv)
   
   //Get thread count from cmd line
   thread_count = strtol(argv[1], NULL, 10);
+  if(thread_count % 2 != 0){
+	  intervals += 1;
+  }
   thread_handles = malloc(thread_count*sizeof(pthread_t));//Allocate space for threads
   //Create the threads
   for(thread = 0; thread < thread_count; thread++){
